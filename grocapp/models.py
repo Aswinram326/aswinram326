@@ -35,7 +35,6 @@ class Order(models.Model):
    
     @property
     def shipping(self):
-        
         orderitems=self.orderitem_set.all()
         for i in orderitems:
             if i.product.instock == True:

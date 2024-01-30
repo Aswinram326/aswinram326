@@ -124,13 +124,13 @@ def checkout(request,**kwargs):
     
     else:
         items = []
-        order={'get_cart_total':0,'get_cart_item':0, 'shipping':False}
+        order={'get_cart_total':0,'get_cart_item':0,'shipping':False}
         cartItems = order['get_cart_item']
     
       
     
-    context={'items':items,'order':order,'cartItems':cartItems}
-    return render(request,"grocapp/checkout.html",context)
+  
+    return render(request,"grocapp/checkout.html",{'items':items,'order':order,'cartItems':cartItems})
 
    
 
@@ -205,7 +205,8 @@ def signup(request):
                 Customer.objects.create(user=user,name=name, email=email)
                 auth_login(request,user)
                 msg="Signup Success"
-                return render(request, 'grocapp/signup.html', {'form': form,'msg':msg})
+                return render(request, 'grocapp/signin.html')
+              
     else:
 
         form =customUserCreatonForm()
