@@ -1,0 +1,45 @@
+{% extends 'grocapp/layout/base.html' %}
+{% load static %}
+{% block content %}
+
+
+    <div class="container mt-5">
+        <h2 class="mb-4">{{ products.name }}</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <img src="{{ products.image.url }}" class="card-img-top" alt="{{ products.name }} Image">
+                    <div class="card-body">
+                        <!-- <p class="h3 card-title">{{ product.productname }}</p> -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <form action="#" method="post" >
+                    {% csrf_token %}
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="col-12 text-center">Details</h2>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>name:</strong>&nbsp;&nbsp;{{ products.name }}</li>
+                            <li class="list-group-item"><strong>Price:</strong>&nbsp;&nbsp;{{ products.price }}</li>
+                            <li name="address" class="list-group-item"><strong>Category:</strong>&nbsp;&nbsp;{{ products.category }}</li>
+                        
+                        </ul>
+                        <form action="#" method="get" class="form-inline">
+                            <button data-product="{{products.id}}" data-action="add" class="cbtn qbtn"><i class="fa fa-shopping-cart"></i>&nbsp;Add to Cart</button>
+                        </form>
+                        <!-- <form action="#" method="get" class="form-inline">
+                            <button class="buy"><i class="fa fa-shopping-cart"></i>&nbsp;Buy Now</button>
+                        </form> -->
+                     
+ 
+                    </div>
+                </div>
+            </form>
+            </div>
+       
+        </div>
+    </div>
+{% endblock %}

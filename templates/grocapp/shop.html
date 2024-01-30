@@ -1,0 +1,74 @@
+{% extends 'grocapp/layout/base.html' %}
+{% load static %}
+{% block content %}
+<style>
+  .cbtn{
+  display: inline-block;
+  padding: 6px 45px;
+  background-color: #3b9946;
+  border: 1px solid #3b9946;
+  border-radius: 5px;
+  -webkit-transition: all .3s;
+  transition: all .3s;
+  display: block;
+  color: #fff;
+  margin: 35px auto 0 auto;
+
+}
+
+.cbtn:hover{
+  background-color: white;
+  color: #3b9946;
+}
+</style>
+
+  <!-- shop section -->
+
+  <section class="shop_section layout_padding">
+    <div class="container">
+      <div class="heading_container heading_center">
+        <h2>
+          All Products
+        </h2>
+      </div>
+      <div class="row">
+        {% if products %}
+        {% for product in products %}
+        <div class="col-sm-6 col-md-4 col-lg-3">
+          <div class="box">
+            <a href="{% url 'productdetails' product_id=product.id %}">
+              <div class="img-box">
+                <img src="{{product.image.url}}" alt="">
+              </div>
+              <div class="detail-box">
+                <h6>
+                  {{product.name}}
+                  
+                </h6>
+                <h6>
+                  Price:
+               
+                  <span>
+                    <strong>₹{{product.price}}</strong>
+                  </span>
+                </h6>
+              </div>
+           
+            </a>
+          
+              <button data-product="{{product.id}}" data-action="add" class="cbtn qbtn"><i class="fa fa-shopping-cart"></i>&nbsp;Add to Cart</button>
+          </div>
+      
+          
+        </div>
+        {% endfor %}
+        {% endif %}
+        
+      </div>
+    </div>
+  </section>
+
+  <!-- end shop section -->
+
+  <!-- info section -->
+  {% endblock %}

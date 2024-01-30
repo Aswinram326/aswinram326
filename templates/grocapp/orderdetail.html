@@ -1,0 +1,45 @@
+{% extends 'grocapp/layout/base.html' %}
+{% load static %}
+{% block content %}
+
+
+    <div class="container mt-5">
+        <h2 class="mb-4">{{ products.name }}</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <img src="{{ products.product.image.url }}" class="card-img-top" alt="{{ products.name }} Image">
+                    <div class="card-body">
+                        <!-- <p class="h3 card-title">{{ product.productname }}</p> -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <form action="#" method="post" >
+                    {% csrf_token %}
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="col-12 text-center">Order Details</h2>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Name:</strong>&nbsp;&nbsp;{{ products.product.name }}</li>
+                            <li class="list-group-item"><strong>Price:</strong>&nbsp;&nbsp;{{ products.get_total}}</li>
+                            <li name="address" class="list-group-item"><strong>Quantity:</strong>&nbsp;&nbsp;{{ products.quantity}}</li>
+                            <li name="address" class="list-group-item"><strong>Transaction id:</strong>&nbsp;&nbsp;{{ products.order.transaction_id}}</li>
+                            {% if products.order.complete %}
+                            <li name="address" class="list-group-item"><strong>Status:</strong><small class="badge badge-success">Completed</small></li>
+                            {%else%}
+                            <li name="address" class="list-group-item"><strong>Status:</strong><small class="badge badge-warning">Pending</small></li>
+                            {% endif %}
+                        </ul>
+                       
+            
+ 
+                    </div>
+                </div>
+            </form>
+            </div>
+       
+        </div>
+    </div>
+{% endblock %}

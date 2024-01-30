@@ -1,0 +1,294 @@
+{% extends 'grocapp/layout/base.html' %}
+{% load static %}
+{% block content %}
+<script src="https://js.stripe.com/v3/"></script>
+<style>
+    
+    body{
+	background-color: hsl(0, 0%, 98%);
+}
+
+h1,h2,h3,h4,h5,h6{
+	color:hsl(0, 0%, 30%);
+}
+
+.box-element{
+	box-shadow:hsl(0, 0%, 80%) 0 0 16px;
+	background-color: #fff;
+	border-radius: 4px;
+	padding: 10px;
+    margin-bottom: 10px;
+}
+
+.thumbnail{
+	width: 100%;
+	height: 200px;
+	-webkit-box-shadow: -1px -3px 5px -2px rgba(214,214,214,1);
+    -moz-box-shadow: -1px -3px 5px -2px rgba(214,214,214,1);
+    box-shadow: -1px -3px 5px -2px rgba(214,214,214,1);
+}
+
+.product{
+	border-radius: 0 0 4px 4px;
+}
+
+.bg-dark{
+	background-color: #4f868c!important;
+}
+
+#cart-icon{
+	width:25px;
+	display: inline-block;
+	margin-left: 15px;
+}
+
+#cart-total{
+	display: block;
+	text-align: center;
+	color:#fff;
+	background-color: red;
+	width: 20px;
+	height: 25px;
+	border-radius: 50%;
+	font-size: 14px;
+}
+
+.col-lg-4, .col-lg-6, .col-lg-8, .col-lg-12{
+	margin-top: 10px;
+}
+
+.btn{
+	border-radius: 0;
+}
+
+.row-image{
+	width: 100px;
+}
+
+.form-field{
+	width:250px;
+	display: inline-block;
+	padding: 5px;
+}
+
+.cart-row{
+	display: flex;
+    align-items: flex-stretch;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ececec;
+
+}
+
+.quantity{
+	display: inline-block;
+	font-weight: 700;
+	padding-right:10px;
+	
+
+}
+
+.chg-quantity{
+	width: 12px;
+	cursor: pointer;
+	display: block;
+	margin-top: 5px;
+	transition:.1s;
+}
+
+.chg-quantity:hover{
+	opacity: .6;
+}
+
+
+.hidden{
+	display: none!important;
+}
+
+.btn {
+        display: block;
+        width: 40%;
+        padding: 10px;
+        background-color: #4caf50;
+        color: #fff;
+        text-align: center;
+        text-decoration: none;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        
+        }
+.btn:hover{
+            color: black;
+            background-color:#53c057;
+        }
+     
+</style>
+
+<div class="row">
+    
+
+    <div class="col-lg-6">
+        <div class="box-element">
+           
+            <hr>
+            <h3>Order Summary</h3>
+            <hr>
+            {% for item in items %}
+            <div class="cart-row">
+                <div style="flex:2"><img class="row-image" src="{{item.product.image.url}}"></div>
+                <div style="flex:2"><p>{{item.product.name}}</p></div>
+				<div style="flex:1"><p>₹{{item.product.price}}</p></div>
+                <div style="flex:1"><p>x{{item.quantity}}</p></div>
+            </div>
+            {% endfor %}
+            <h5>Items:&nbsp;{{order.get_cart_items}}</h5>
+            &nbsp;
+            <h5>Total:&nbsp;₹{{order.get_cart_total}}</h5>
+            <a  class="btn btn-outline-dark" href="{% url 'cart' %}">&#x2190; Back to Cart</a>
+        </div>
+        
+    </div>
+
+
+    <div class="col-lg-6">
+        <div class="box-element" id="form-wrapper">
+            <form id="form">
+                {% csrf_token %}
+                <div id="user-info">
+                    <div class="form-field">
+                        <input required class="form-control" type="text" name="name" placeholder="Name..">
+                    </div>
+                    <div class="form-field">
+                        <input required class="form-control" type="email" name="email" placeholder="Email..">
+                    </div>
+                </div>
+                
+                <div id="shipping-info">
+                    <hr>
+                    <p>Shipping Information:</p>
+                    <hr>
+                    <div class="form-field">
+                        <input class="form-control" type="text" name="place" placeholder="Address..">
+                    </div>
+                    <div class="form-field">
+                        <input class="form-control" type="text" name="district" placeholder="City..">
+                    </div>
+                    <div class="form-field">
+                        <input class="form-control" type="text" name="state" placeholder="State..">
+                    </div>
+                    <div class="form-field">
+                        <input class="form-control" type="text" name="pincode" placeholder="Zip code..">
+                    </div>
+                  
+                </div>
+
+                <hr>
+                <input id="form-button" class="cbtn btn-success btn-block" type="submit" value="Continue">
+            </form>
+        </div>
+
+        <br>
+        <div class="box-element hidden" id="payment-info">
+            <small>Payment Options</small>
+          
+       
+            <form action="#" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="order-id" value="{{order.id}}" >
+                <button type="submit" id="make-payment">Checkout</button>
+            </form>
+        </div>
+        
+    </div>
+
+         
+
+
+
+</div>
+<script >
+    var shipping = '{{order.shipping}}'
+    var total = '{{order.get_cart_total}}'
+
+
+    if (user != 'AnonymousUser'){
+        document.getElementById('user-info').innerHTML=''
+    }
+
+
+    
+
+    var form = document.getElementById('form')
+
+    csrftoken=form.getElementsByTagName("input")[0].value
+
+
+
+    form.addEventListener('submit',function(e){
+        e.preventDefault()
+        console.log('form submitted')
+        document.getElementById('form-button').classList.add("hidden");
+        document.getElementById('payment-info').classList.remove("hidden");
+
+    })
+    document.getElementById('make-payment').addEventListener('click',function(e){
+        submitFormData()
+
+    })
+    function submitFormData(){
+        console.log('payement button clicked')
+
+        var userFormData={
+            'name':null,
+            'email':null,
+            'total':total,
+
+        }
+
+        var shippingInfo={
+            'place':null,
+            'district':null,
+            'state':null,
+            'pincode':null,
+            
+        }
+        if(shipping !='False'){
+            shippingInfo.place=form.place.value
+            shippingInfo.district=form.district.value
+            shippingInfo.state=form.state.value
+            shippingInfo.pincode=form.pincode.value
+        }
+
+        if(user =='AnonymousUser'){
+            userFormData.name=form.name.value
+            userFormData.email=form.email.value
+
+        }
+        console.log('shipping Info',shippingInfo)
+        console.log('UserInfo',userFormData)
+        var url = "/processOrder/"
+        fetch(url,{
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json',
+                'X-CSRFToken':csrftoken,
+        },
+        body:JSON.stringify({'form':userFormData,'shipping':shippingInfo}),
+    })
+    .then((response)=>response.json())
+    .then((data)=>{
+        console.log('Success:',data);
+        alert('Transaction is completed and Order hasbeen placed')
+        window.location.href="{% url 'index' %}"
+            
+        })
+
+
+
+    }
+</script>
+
+    {% endblock %}
+    

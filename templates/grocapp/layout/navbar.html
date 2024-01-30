@@ -1,0 +1,118 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GROCERY STORE</title>
+</head>
+<style>
+ 
+
+</style>
+
+<body>
+    <div class="hero_area">
+        <!-- header section strats -->
+        <header class="header_section">
+          <nav class="navbar navbar-expand-lg custom_nav-container ">
+            <a class="navbar-brand" href="{% url 'index' %}">
+              <span>
+                GROCERY STORE
+              </span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class=""></span>
+            </button>
+            
+    
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav ">
+                
+                <li class="nav-item ">
+                  <a class="nav-link" href="{% url 'index' %}">Home <span class="sr-only">(current)</span></a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'list' %}">
+                    Shop
+                  </a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'checkout' %}">
+                    Why Us
+                  </a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'cart' %}">Cart</a>
+                </li>
+                <div>
+                  <p>{{get_cart_item}}</p>
+                </div>
+             
+              </ul>
+              <div class="dropdown">
+                <ul class="navbar-nav ">
+                  <li class="nav-item">
+                    <a class="nav-link">Category</a>
+                  </li>
+
+                </ul>
+               
+                
+                <div class="dropdown-content">
+                  <a href="{% url 'category' 'Vegetable' %}">Vegetables</a>
+                    <a href="{% url 'category' 'Fruit' %}">Fruits</a>
+                    <a href="{% url 'category' 'Beverages' %}">Beverages</a>
+                    <a href="{% url 'category' 'Oil&masala' %}">Oil&Masala</a>
+                    <a href="{% url 'category' 'Snacks' %}">Snacks</a>
+                    <a href="{% url 'category' 'Egg&meat' %}">Eggs&Meat</a>
+                    <a href="{% url 'category' 'Soap&detergent' %}">Soap&Detergents</a>
+                    <a href="{% url 'list' %}">All</a>
+                </div>
+              </div>
+
+                <form action="{% url 'searchbar' %}" method="get" class="form-inline">
+                  <div class="col-md-4">
+                    <input type="text" name="q" class="form-control border-0 py-3" placeholder="Search for products">
+                  </div>
+                  <div class="btns" >
+                    <button class="btnss btn-dark border-0 w-100">Search</button>
+                  </div>    
+              </form>
+
+
+                </ul>
+ 
+          
+                <div class="dropdown">
+                <ul class="navbar-nav ">
+                  <li class="nav-item">
+                    <a class="nav-link">{% if user.is_authenticated %}<a class="nav-link">{{user.username}}</a>{% else %}Account</a>{% endif %}
+                  </li>
+                </ul>
+                <div class="dropdown-content">
+                {% if user.is_authenticated %}
+                  <a class="nav-link" href="{% url 'change_password' %}">Change Password</a>
+                  <a class="nav-link" href="{% url 'myorder' %}">MyOrder</a>
+                  <a class="nav-link" href="{% url 'signout' %}">Logout</a>
+                {% else %}
+                  <a class="nav-link" href="{% url 'signin' %}">Login</a>
+                  <a class="nav-link" href="{% url 'signup' %}">Signup</a>
+                {% endif %}
+             
+                </div>
+              </div>
+
+        
+            </div>
+          </nav>
+        </header>
+   
+</body>
+</html>
